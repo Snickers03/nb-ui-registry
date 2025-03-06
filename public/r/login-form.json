@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "login-form",
+  "type": "registry:component",
+  "title": "Login Form",
+  "description": "A login form with Zod validation.",
+  "dependencies": [
+    "zod",
+    "sonner"
+  ],
+  "registryDependencies": [
+    "button",
+    "input",
+    "label",
+    "textarea",
+    "card",
+    "form"
+  ],
+  "files": [
+    {
+      "path": "registry/login-form/login-form.tsx",
+      "content": "\"use client\";\n\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport Link from \"next/link\";\nimport { useForm } from \"react-hook-form\";\nimport { z } from \"zod\";\n\nimport { Button } from \"@/components/ui/button\";\nimport {\n  Card,\n  CardContent,\n  CardDescription,\n  CardHeader,\n  CardTitle,\n} from \"@/components/ui/card\";\n\nimport { Form } from \"@/components/ui/form\";\nimport { BaseFormField } from \"../base-form-field\";\n\nconst loginSchema = z.object({\n  email: z\n    .string()\n    .min(1, {\n      message: \"* Email is required\",\n    })\n    .email({\n      message: \"* Invalid email address\",\n    }),\n  password: z.string().min(1, {\n    message: \"* Password is required\",\n  }),\n});\n\n\n\nexport function LoginForm() {\n  const form = useForm<z.infer<typeof loginSchema>>({\n    resolver: zodResolver(loginSchema),\n    defaultValues: {\n      email: \"\",\n      password: \"\",\n    },\n  });\n\n  // const { mutate: login } = trpc.auth.login.useMutation({\n  //   onSuccess: (user) => {\n  //     setUser(user);\n  //     document.cookie = `token=${user.Session.token}; path=/`;\n  //     form.reset();\n  //     toast.success(`Welcome back, ${user.username}!`);\n  //     if (!user.verified) router.push(\"/signup\");\n  //     else router.push(\"/\");\n  //   },\n  //   onError: (error) => {\n  //     form.setValue(\"password\", \"\");\n  //     form.setFocus(\"password\");\n  //     toast.error(error.shape?.message || \"Something went wrong.\");\n  //   },\n  // });\n\n  function onSubmit(values: z.infer<typeof loginSchema>) {\n    console.log(\"Values: \", values);\n  }\n\n  return (\n    <Card className='mx-auto w-full max-w-sm'>\n      <CardHeader>\n        <CardTitle className='text-2xl'>Login</CardTitle>\n        <CardDescription>\n          Enter your email and password below to login to your account.\n        </CardDescription>\n      </CardHeader>\n      <CardContent className='grid gap-4'>\n        <Form {...form}>\n          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>\n            <BaseFormField\n              control={form.control}\n              name='email'\n              label='Email'\n              placeholder='read-mate@niklas.sh'\n            />\n            <div>\n              <BaseFormField\n                control={form.control}\n                name='password'\n                label='Password'\n                placeholder='********'\n                type='password'\n              />\n              <Button\n                type='reset'\n                variant={\"link\"}\n                className='w-full justify-end space-x-2 px-0 text-muted-foreground'\n              >\n                <Link href={\"/forget-password\"}>Forgot your password?</Link>\n              </Button>\n            </div>\n            <Button type='submit' className='w-full'>\n              Login\n            </Button>\n          </form>\n        </Form>\n        <Link className='pt-2 text-muted-foreground' href='/signup'>\n          No account? <b className='underline'>Sign Up</b>\n        </Link>\n      </CardContent>\n    </Card>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}
